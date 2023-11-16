@@ -18,18 +18,23 @@ class QuadTree:
         self.node_list = [hg, hd, bg, bd]
         self.depth = 0
         self.create_tk_window()
+        self.create_tk_canvas()
 
         for i in range(4):
+            print("self.node_list[i] = ", self.node_list[i], ", i = ", i)
             if self.value_is_list(self.node_list[i]):
-                self.depth += 1
-                self.get_sub_list(self.get_list_from_string(self.node_list))
+                print(self.get_sub_list(self.get_list_from_string(self.node_list)))
+
             else:
                 fill = "black" if self.node_list[i] else "grey"
-                self.create_tk_rectangle(self.WIDTH, self.HEIGHT, fill, self.depth)
+                self.tk_window.canvas.create_rectangle(self.node_posx1[i] * self.WIDTH,
+                                                       self.node_posy1[i] * self.HEIGHT,
+                                                       self.node_posx2[i] * self.WIDTH,
+                                                       self.node_posy2[i] * self.HEIGHT,
+                                                       fill=fill)
 
-    @property
-    def depth(self):
-        return self.depth
+        self.tk_window.canvas.pack()
+        self.tk_window.mainloop()
 
     def get_list_from_string(self, value) -> list:
         for i in range(4):
@@ -49,19 +54,11 @@ class QuadTree:
 
     def create_tk_window(self):
         self.tk_window = Tk()
+        return self.tk_window
+
+    def create_tk_canvas(self):
         self.tk_window.canvas = Canvas(self.tk_window, width=self.WIDTH, height=self.HEIGHT)
-
-    def create_tk_rectangle(self, w, h, fill, depth):
-        for i in range(4):
-            self.tk_window.canvas.create_rectangle(int(self.node_posx1[i]),
-                                                   int(self.node_posy1[i]),
-                                                   int(self.node_posx2[i]),
-                                                   int(self.node_posy2[i]),
-                                                   fill=fill)
-
-    @depth.setter
-    def depth(self, value):
-        self._depth = value
+        return self.tk_window.canvas
 
 
 first_quadtree = QuadTree(1, 0, 1, 0)
